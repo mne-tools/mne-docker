@@ -25,5 +25,6 @@ RUN pip install bokeh
 COPY prepare.sh /usr/bin/prepare.sh
 
 RUN mkdir /opt/app
+RUN ["chmod", "+x", "/usr/bin/prepare.sh"]
 
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

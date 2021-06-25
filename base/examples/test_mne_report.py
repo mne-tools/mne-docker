@@ -1,18 +1,18 @@
 # modified from 70_report.py
 
 import os
-import matplotlib.pyplot as plt
+import os.path as op
 import mne
 import sys
 
 path = mne.datasets.sample.data_path(verbose=True)
 
-subjects_dir = os.path.join(path, 'subjects')
+subjects_dir = op.join(path, 'subjects')
 report = mne.Report(subject='sample', subjects_dir=subjects_dir,
                     raw_psd=True, projs=True, verbose=True)
 report.parse_folder(path, render_bem=True)
 
-fname_stc = os.path.join(path, 'MEG', 'sample', 'sample_audvis-meg')
+fname_stc = op.join(path, 'MEG', 'sample', 'sample_audvis-meg')
 stc = mne.read_source_estimate(fname_stc, subject='sample')
 figs = list()
 kwargs = dict(subjects_dir=subjects_dir, initial_time=0.13,
@@ -27,5 +27,9 @@ for hemi in ('lh', 'rh'):
 report.add_slider_to_section(figs)
 
 if len(sys.argv) >= 2:
-    report.save(sys.argv[1], overwrite=True, open_browser=False)
+    out_fname = sys.argv[1]
+else:
+    out_fname = op.join(op.dirname(op.realpath(__file__)),
+                        'mne_rpt.html')
 
+report.save(out_fname, overwrite=True, open_browser=False)

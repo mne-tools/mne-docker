@@ -11,8 +11,7 @@ ARG CONDA_DIR="/opt/conda/"
 
 # install xvfb
 RUN apt-get update && \
-    apt-get install -y xvfb wget && \
-    apt-get install -y qt5-default && \
+    apt-get install -y wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -56,13 +55,6 @@ RUN conda install --yes \
 
 RUN pip install s3fs
 RUN pip install bokeh
-RUN pip install vtk pyvista pyvistaqt PyQt5 matplotlib nibabel joblib h5py mne
-
-# setup environment for mne
-# MNE_3D_OPTION_ANTIALIAS is needed to avoid blank screenshots.
-# PYVISTA_OFF_SCREEN=true is *NOT* needed
-ENV \
-    MNE_3D_BACKEND=pyvista \
-    MNE_3D_OPTION_ANTIALIAS=false
+RUN pip install nibabel joblib h5py mne
 
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

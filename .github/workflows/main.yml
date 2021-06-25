@@ -33,6 +33,3 @@ jobs:
 
       - name: System info
         run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"
-
-      - name: Run visualisation test
-        run: docker run -v `pwd`/base/examples:/opt/app/examples mnetools/mne-python-viz python /opt/app/examples/test_mne_report.py

@@ -29,7 +29,7 @@ services:
         - base
     build:
       context: ./base
-      dockerfile: Dockerfile.viz
-    image: mnetools/mne-python-viz
-    hostname: mne-dask-worker-viz
+      dockerfile: Dockerfile.plot
+    image: mnetools/mne-python-plot
+    hostname: mne-dask-worker-plot
     command: ["dask-worker", "tcp://scheduler:8786"]

@@ -1,4 +1,4 @@
-name: build and tag
+name: Release tag
 
 on:
   push:
@@ -28,18 +28,22 @@ jobs:
       - name: Print release information
         run: |
           echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}    
-      - name: Build docker image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} .
+          echo ${{ env.RELEASE_VERSION }}
+
+      - name: Build base image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile
         
-      - name: Tag image
-        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python/base:${{ env.RELEASE_VERSION }}
+      - name: Tag base image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
 
-      - name: Push image to github
-        run: docker push ghcr.io/mne-tools/mne-python/base:${{ env.RELEASE_VERSION }}
+      - name: Push base image to github
+        run: docker push ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
 
-      - name: Tag image
-        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python/base
+      - name: Build plot image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile.plot
 
-      - name: Push image to github
-        run: docker push ghcr.io/mne-tools/mne-python/base:latest
+      - name: Tag plot image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}
+
+      - name: Push plot image to github
+        run: docker push ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}

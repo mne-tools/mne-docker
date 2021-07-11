@@ -1,4 +1,4 @@
-name: release latest
+name: Release latest
 
 on:
   push:
@@ -24,11 +24,20 @@ jobs:
       - name: Move to base
         run: cd base
 
-      - name: Build docker image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} .
+      - name: Build base image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile
         
-      - name: Tag image
-        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-pyhon/base
+      - name: Tag base image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python
 
-      - name: Push image to github
-        run: docker push ghcr.io/mne-tools/mne-python/base:latest
+      - name: Push base image to github
+        run: docker push ghcr.io/mne-tools/mne-python:latest
+
+      - name: Build plot image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile.plot
+
+      - name: Tag plot image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot
+
+      - name: Push plot image to github
+        run: docker push ghcr.io/mne-tools/mne-python-plot:latest

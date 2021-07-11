@@ -34,11 +34,14 @@ jobs:
       - name: System info - base image
         run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"
 
+      - name: Run base test
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/base.py
+
       - name: Build plot image
         run: docker-compose build plot
 
       - name: System info - plot image
         run: docker run mnetools/mne-python-plot python -c "import mne; mne.sys_info()"
 
-      - name: Run visualisation test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/visualisation.py
+      - name: Run plotting test
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/plot.py

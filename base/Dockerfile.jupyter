@@ -2,4 +2,6 @@ FROM mnetools/mne-python
 
 RUN pip install jupyterlab
 
+EXPOSE 8888
+
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

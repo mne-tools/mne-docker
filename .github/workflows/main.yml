@@ -40,14 +40,14 @@ jobs:
 
       # Jupyter
 
-      - name: Build plot image
+      - name: Build jupyter image
         run: docker-compose build jupyter
 
-      - name: System info - plot image
+      - name: System info - jupyter image
         run: docker run mnetools/mne-python-jupyter ipython -c "import mne; mne.sys_info()"
 
-      - name: Run plotting test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot ipython /opt/app/examples/tests/plot.py
+      - name: Run jupyter test
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter ipython /opt/app/examples/tests/plot.py
 
       # Plot
 

@@ -37,7 +37,7 @@ jobs:
         run: docker-compose build plot
 
       - name: Rename plot image tag for release
-        run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python-plot
+        run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot
 
       - name: Push plot image to github
         run: docker push ghcr.io/mne-tools/mne-python-plot:latest

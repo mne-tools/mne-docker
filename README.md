@@ -9,7 +9,7 @@ This repository also hosts the code and runs the github actions to build and rel
 To download a notebook capable MNE docker image and launch a jupyter lab session run:
 
 ```bash
-docker run -p 8888:8888 ghcr.io/mne-tools/mne-python
+docker run -p 8888:8888 ghcr.io/mne-tools/mne-python-jupyter jupyter lab --ip="*"
 ```
 
 ## Available Docker images
@@ -17,7 +17,8 @@ docker run -p 8888:8888 ghcr.io/mne-tools/mne-python
 The repository contains several images:
 
 1. `mne-tools/mne-python`: contains a minimal MNE-Python installation that can run python scripts. It does not contain 3D plotting capabilities or a notebook server
-2. `mne-tools/mne-python-plot`: adds 2D and 3D plotting capabilities to the base image.
+2. `mne-tools/mne-python-jupyter`: adds jupyter lab to the base image.
+3. `mne-tools/mne-python-plot`: adds 2D and 3D plotting capabilities to the `mne-python-jupyter` image.
 
 Several versions of the image are stored that correspond to different MNE-Python versions.
 Images are also build with from the main branch of MNE-Python, these contain _dev_ in the name.

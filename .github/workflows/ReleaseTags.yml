@@ -42,6 +42,15 @@ jobs:
       - name: Push base image to github
         run: docker push ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
 
+      - name: Build jupyter image
+        run: docker-compose build jupyter
+
+      - name: Rename jupyter image tag for release
+        run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${{ env.RELEASE_VERSION }}
+
+      - name: Push jupyter image to github
+        run: docker push ghcr.io/mne-tools/mne-python-jupyter:${{ env.RELEASE_VERSION }}
+
       - name: Build plot image
         run: docker-compose build plot
 

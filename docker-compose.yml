@@ -10,9 +10,17 @@ services:
       dockerfile: Dockerfile
     image: mnetools/mne-python
 
-  plot:
+  jupyter:
     depends_on:
         - base
+    build:
+      context: ./base
+      dockerfile: Dockerfile.jupyter
+    image: mnetools/mne-python-jupyter
+
+  plot:
+    depends_on:
+        - jupyter
     build:
       context: ./base
       dockerfile: Dockerfile.plot

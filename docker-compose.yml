@@ -1,11 +1,24 @@
 version: "3.1"
 
 services:
+
+  # Images
+
   base:
     build:
       context: ./base
       dockerfile: Dockerfile
     image: mnetools/mne-python
+
+  plot:
+    depends_on:
+        - base
+    build:
+      context: ./base
+      dockerfile: Dockerfile.plot
+    image: mnetools/mne-python-plot
+
+  # Dask
 
   scheduler:
     depends_on:
@@ -24,12 +37,9 @@ services:
     hostname: mne-dask-worker
     command: ["dask-worker", "tcp://scheduler:8786"]
 
-  worker_viz:
+  worker-plot:
     depends_on:
-        - base
-    build:
-      context: ./base
-      dockerfile: Dockerfile.plot
+      - plot
     image: mnetools/mne-python-plot
     hostname: mne-dask-worker-plot
     command: ["dask-worker", "tcp://scheduler:8786"]

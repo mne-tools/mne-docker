@@ -20,7 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # https://github.com/marcellodesales/cloner/packages?package_type=Docker
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -28,8 +27,20 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build docker images
-        run: docker-compose build
-
-      - name: System info
+      - name: Build base image
+        run: docker-compose build base
+    
+      - name: System info - base image
         run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"
+
+      - name: Run base test
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python python /opt/app/examples/tests/base.py
+
+      - name: Build plot image
+        run: docker-compose build plot
+
+      - name: System info - plot image
+        run: docker run mnetools/mne-python-plot python -c "import mne; mne.sys_info()"
+
+      - name: Run plotting test
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/plot.py

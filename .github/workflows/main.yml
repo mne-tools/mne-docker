@@ -27,6 +27,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Base
+
       - name: Build base image
         run: docker-compose build base
     
@@ -35,6 +37,19 @@ jobs:
 
       - name: Run base test
         run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python python /opt/app/examples/tests/base.py
+
+      # Jupyter
+
+      - name: Build plot image
+        run: docker-compose build jupyter
+
+      - name: System info - plot image
+        run: docker run mnetools/mne-python-jupyter ipython -c "import mne; mne.sys_info()"
+
+      - name: Run plotting test
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot ipython /opt/app/examples/tests/plot.py
+
+      # Plot
 
       - name: Build plot image
         run: docker-compose build plot

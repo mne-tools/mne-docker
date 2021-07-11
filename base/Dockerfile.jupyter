@@ -1,0 +1,5 @@
+FROM mnetools/mne-python
+
+RUN pip install jupyterlab
+
+ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

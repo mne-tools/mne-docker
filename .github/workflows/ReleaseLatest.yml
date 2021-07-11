@@ -1,0 +1,43 @@
+name: Release latest
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Move to base
+        run: cd base
+
+      - name: Build base image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile
+        
+      - name: Tag base image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python
+
+      - name: Push base image to github
+        run: docker push ghcr.io/mne-tools/mne-python:latest
+
+      - name: Build plot image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile.plot
+
+      - name: Tag plot image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot
+
+      - name: Push plot image to github
+        run: docker push ghcr.io/mne-tools/mne-python-plot:latest

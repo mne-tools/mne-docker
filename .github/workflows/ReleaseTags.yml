@@ -1,0 +1,49 @@
+name: Release tag
+
+on:
+  push:
+    tags:
+      - '*'
+      
+ 
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Set env for release
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Print release information
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
+
+      - name: Build base image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile
+        
+      - name: Tag base image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
+
+      - name: Push base image to github
+        run: docker push ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
+
+      - name: Build plot image
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f ./Dockerfile.plot
+
+      - name: Tag plot image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}
+
+      - name: Push plot image to github
+        run: docker push ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}

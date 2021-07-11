@@ -1,6 +1,6 @@
 FROM mnetools/mne-python
 
-RUN pip install jupyterlab
+RUN pip install jupyterlab ipywidgets ipyvtklink
 
 EXPOSE 8888
 

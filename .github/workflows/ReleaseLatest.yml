@@ -21,11 +21,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Move to base
-        run: cd base
+      - shell: bash -el {0}
+        run: |
+          pwd
+          ls
 
       - name: Build base image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile .
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile base
         
       - name: Tag base image
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python
@@ -34,7 +36,7 @@ jobs:
         run: docker push ghcr.io/mne-tools/mne-python:latest
 
       - name: Build plot image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile.plot .
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile.plot base
 
       - name: Tag plot image
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot

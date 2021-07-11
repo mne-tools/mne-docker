@@ -30,8 +30,13 @@ jobs:
           echo $RELEASE_VERSION
           echo ${{ env.RELEASE_VERSION }}
 
+      - shell: bash -el {0}
+        run: |
+          pwd
+          ls
+
       - name: Build base image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile .
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile base
         
       - name: Tag base image
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
@@ -40,7 +45,7 @@ jobs:
         run: docker push ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
 
       - name: Build plot image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile.plot .
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile.plot base
 
       - name: Tag plot image
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}

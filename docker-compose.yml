@@ -8,7 +8,7 @@ services:
     build:
       context: ./base
       dockerfile: Dockerfile
-    image: mne-tools/mne-python
+    image: mnetools/mne-python
 
   plot:
     depends_on:
@@ -16,14 +16,14 @@ services:
     build:
       context: ./base
       dockerfile: Dockerfile.plot
-    image: mne-tools/mne-python-plot
+    image: mnetools/mne-python-plot
 
   # Dask
 
   scheduler:
     depends_on:
       - base
-    image: mne-tools/mne-python
+    image: mnetools/mne-python
     hostname: mne-dask-scheduler
     ports:
       - "8786:8786"
@@ -33,13 +33,13 @@ services:
   worker:
     depends_on:
       - base
-    image: mne-tools/mne-python
+    image: mnetools/mne-python
     hostname: mne-dask-worker
     command: ["dask-worker", "tcp://scheduler:8786"]
 
   worker-plot:
     depends_on:
       - plot
-    image: mne-tools/mne-python-plot
+    image: mnetools/mne-python-plot
     hostname: mne-dask-worker-plot
     command: ["dask-worker", "tcp://scheduler:8786"]

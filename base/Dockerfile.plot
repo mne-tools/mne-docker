@@ -1,4 +1,4 @@
-FROM mne-tools/mne-python
+FROM mnetools/mne-python
 
 ENV DEBIAN_FRONTEND=noninteractive
 

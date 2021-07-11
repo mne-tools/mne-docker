@@ -25,9 +25,10 @@ jobs:
         run: |
           pwd
           ls
+          cd base
 
       - name: Build base image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile base
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile .
         
       - name: Tag base image
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python
@@ -36,7 +37,7 @@ jobs:
         run: docker push ghcr.io/mne-tools/mne-python:latest
 
       - name: Build plot image
-        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile.plot base
+        run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} -f Dockerfile.plot .
 
       - name: Tag plot image
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/mne-tools/mne-python-plot

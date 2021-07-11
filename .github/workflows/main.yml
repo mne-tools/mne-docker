@@ -47,7 +47,7 @@ jobs:
         run: docker run mnetools/mne-python-jupyter ipython -c "import mne; mne.sys_info()"
 
       - name: Run jupyter test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter ipython /opt/app/examples/tests/plot.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter ipython /opt/app/examples/tests/base.py
 
       # Plot
 

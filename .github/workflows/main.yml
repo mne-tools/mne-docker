@@ -1,6 +1,6 @@
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -10,12 +10,12 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-    
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -28,5 +28,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build docker image
+      - name: Build docker images
         run: docker-compose build
+
+      - name: System info
+        run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"

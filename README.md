@@ -16,7 +16,7 @@ docker run -p 8888:8888 ghcr.io/mne-tools/mne-python-jupyter jupyter lab --ip="*
 
 The repository contains several images:
 
-1. `mne-tools/mne-python`: contains a minimal MNE-Python installation that can run python scripts. It does not contain 3D plotting capabilities or a notebook server
+1. `mne-tools/mne-python`: contains a minimal MNE-Python installation that can run python scripts.
 2. `mne-tools/mne-python-jupyter`: adds jupyter lab to the base image.
 3. `mne-tools/mne-python-plot`: adds 2D and 3D plotting capabilities to the `mne-python-jupyter` image.
 
@@ -25,9 +25,9 @@ This allows you to specify which version of MNE-Python you wish to run.
 Additionally, if you wish to use the latest development version, you can specify the `main` branch.
 For example:
 
-* `mne-tools/mne-python:latest` would use the latest released MNE-Python version, for example v0.23.0.
+* `mne-tools/mne-python:latest` would use the latest released MNE-Python version, e.g. v0.23.0.
 * `mne-tools/mne-python:0.23.0` would use the MNE-Python version 0.23.0.
-* `mne-tools/mne-python:main` would use the main branch from the MNE repository, and would contain the development version of MNE-Python.
+* `mne-tools/mne-python:main` would use the development version of MNE-Python.
 
 
 ## Building images

@@ -29,7 +29,7 @@ jobs:
           echo ${{ matrix.MNE_VERSION }}
 
       - name: Build base image
-        run: docker-compose build base --build-arg mne_nirs_v=${{ matrix.MNE_VERSION }}
+        run: docker-compose build --build-arg mne_nirs_v=${{ matrix.MNE_VERSION }} base
 
       - name: List docker images
         run: docker images

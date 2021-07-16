@@ -12,7 +12,7 @@ RUN apt-get update && \
 USER $MNE_USER
 WORKDIR $HOME_DIR
 
-RUN pip install vtk pyvista pyvistaqt PyQt5 matplotlib nibabel joblib h5py mne
+RUN pip install vtk pyvista pyvistaqt PyQt5 matplotlib
 
 # setup environment for mne
 # MNE_3D_OPTION_ANTIALIAS is needed to avoid blank screenshots.

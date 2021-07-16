@@ -1,14 +1,16 @@
-name: Release tag
+name: Release specified version(s)
 
-on:
-  push:
-    tags:
-      - '*'
-      
- 
+on: [workflow_dispatch]
+
 jobs:
-  docker:
+  release:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        MNE_VERSION: [v0.23.0]
+
     steps:
     
       - uses: actions/checkout@v2
@@ -21,41 +23,46 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        
-      - name: Set env for release
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Print release information
         run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+          echo ${{ matrix.MNE_VERSION }}
 
       - name: Build base image
-        run: docker-compose build base
+        run: docker-compose build base --build-arg mne_nirs_v=${{ matrix.MNE_VERSION }}
 
       - name: List docker images
         run: docker images
 
       - name: Rename base image tag for release
-        run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
+        run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${{ matrix.MNE_VERSION }}
 
       - name: Push base image to github
-        run: docker push ghcr.io/mne-tools/mne-python:${{ env.RELEASE_VERSION }}
+        run: docker push ghcr.io/mne-tools/mne-python:${{ matrix.MNE_VERSION }}
+
+      - name: System info - base image
+        run: docker run ghcr.io/mne-tools/mne-python:${{ matrix.MNE_VERSION }} python -c "import mne; mne.sys_info()"
 
       - name: Build jupyter image
         run: docker-compose build jupyter
 
       - name: Rename jupyter image tag for release
-        run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${{ env.RELEASE_VERSION }}
+        run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${{ matrix.MNE_VERSION }}
 
       - name: Push jupyter image to github
-        run: docker push ghcr.io/mne-tools/mne-python-jupyter:${{ env.RELEASE_VERSION }}
+        run: docker push ghcr.io/mne-tools/mne-python-jupyter:${{ matrix.MNE_VERSION }}
+
+      - name: System info - jupyter image
+        run: docker run ghcr.io/mne-tools/mne-python-jupyter:${{ matrix.MNE_VERSION }} python -c "import mne; mne.sys_info()"
 
       - name: Build plot image
         run: docker-compose build plot
 
       - name: Rename plot image tag for release
-        run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}
+        run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${{ matrix.MNE_VERSION }}
 
       - name: Push plot image to github
-        run: docker push ghcr.io/mne-tools/mne-python-plot:${{ env.RELEASE_VERSION }}
+        run: docker push ghcr.io/mne-tools/mne-python-plot:${{ matrix.MNE_VERSION }}
+
+      - name: System info - plot image
+        run: docker run ghcr.io/mne-tools/mne-python-plot:${{ matrix.MNE_VERSION }} python -c "import mne; mne.sys_info()"

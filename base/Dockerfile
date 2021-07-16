@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+ARG mne_v=v0.23.0
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG MNE_USER="mne_user"
@@ -55,6 +57,7 @@ RUN conda install --yes \
 
 RUN pip install s3fs
 RUN pip install bokeh
-RUN pip install nibabel joblib h5py mne
+RUN pip install nibabel joblib h5py
+RUN pip install https://github.com/mne-tools/mne-python/archive/refs/tags/${mne_v}.zip
 
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

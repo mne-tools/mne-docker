@@ -1,0 +1,7 @@
+FROM mnetools/mne-python
+
+RUN pip install jupyterlab ipywidgets ipyvtklink
+
+EXPOSE 8888
+
+ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

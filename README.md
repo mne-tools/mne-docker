@@ -21,11 +21,13 @@ The repository contains several images:
 3. `mne-tools/mne-python-plot`: adds 2D and 3D plotting capabilities to the `mne-python-jupyter` image.
 
 Several versions of the image are stored that correspond to different MNE-Python versions.
-Images are also build with from the main branch of MNE-Python, these contain _dev_ in the name.
+This allows you to specify which version of MNE-Python you wish to run.
+Additionally, if you wish to use the latest development version, you can specify the `main` branch.
 For example:
 
-* `mne-tools/mne-python:0.23.0` would contain the minimal installation with MNE-Python version 0.23.0.
-* `mne-tools/mne-python-plot:latest` would contain the plotting capable image with  the latest MNE-Python release version.
+* `mne-tools/mne-python:latest` would use the latest released MNE-Python version, for example v0.23.0.
+* `mne-tools/mne-python:0.23.0` would use the MNE-Python version 0.23.0.
+* `mne-tools/mne-python:main` would use the main branch from the MNE repository, and would contain the development version of MNE-Python.
 
 
 ## Building images
@@ -41,8 +43,23 @@ docker-compose build notebook
 
 ## Releasing
 
+#### Github container repository
+
+Images are automatically built and uploaded to the GitHub container repository.
+
+For example, to run the MNE-Python version v0.23.0 image,
+with plotting capabilities,
+mount the local directory,
+and start up a notebook server run:
+
+```bash
+docker run -p 8888:8888 -v `pwd`:/home/mne_user ghcr.io/mne-tools/mne-python-plot:v0.23.0 jupyter-lab --ip="*"
+```
+
+#### Dockerhub
+
 Building and releasing new image versions is done automatically via GitHub Actions. When new commits are
-pushed to the master branch images are built with the `dev` tag and pushed to Docker Hub.
+pushed to the main branch images are built with the `dev` tag and pushed to Docker Hub.
 
 When a new version of mne-python is released a PR should be raised to bump the versions in
 the `Dockerfile`s and then once that has been merged a new tag matching the mne-python version

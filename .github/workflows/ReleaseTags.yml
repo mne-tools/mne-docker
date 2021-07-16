@@ -1,15 +1,17 @@
 name: Release specified version(s)
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'MNE-Python version (e.g. v0.23.0 or main)'
+        required: true
+        default: 'main'
 
 jobs:
   release:
 
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        MNE_VERSION: [v0.23.0, main]
 
     steps:
     
@@ -26,43 +28,43 @@ jobs:
 
       - name: Print release information
         run: |
-          echo ${{ matrix.MNE_VERSION }}
+          echo ${{ github.event.inputs.tags }}
 
       - name: Build base image
-        run: docker-compose build --build-arg mne_v=${{ matrix.MNE_VERSION }} base
+        run: docker-compose build --build-arg mne_v=${{ github.event.inputs.tags }} base
 
       - name: List docker images
         run: docker images
 
       - name: Rename base image tag for release
-        run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${{ matrix.MNE_VERSION }}
+        run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${{ github.event.inputs.tags }}
 
       - name: Push base image to github
-        run: docker push ghcr.io/mne-tools/mne-python:${{ matrix.MNE_VERSION }}
+        run: docker push ghcr.io/mne-tools/mne-python:${{ github.event.inputs.tags }}
 
       - name: System info - base image
-        run: docker run ghcr.io/mne-tools/mne-python:${{ matrix.MNE_VERSION }} python -c "import mne; mne.sys_info()"
+        run: docker run ghcr.io/mne-tools/mne-python:${{ github.event.inputs.tags }} python -c "import mne; mne.sys_info()"
 
       - name: Build jupyter image
         run: docker-compose build jupyter
 
       - name: Rename jupyter image tag for release
-        run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${{ matrix.MNE_VERSION }}
+        run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${{ github.event.inputs.tags }}
 
       - name: Push jupyter image to github
-        run: docker push ghcr.io/mne-tools/mne-python-jupyter:${{ matrix.MNE_VERSION }}
+        run: docker push ghcr.io/mne-tools/mne-python-jupyter:${{ github.event.inputs.tags }}
 
       - name: System info - jupyter image
-        run: docker run ghcr.io/mne-tools/mne-python-jupyter:${{ matrix.MNE_VERSION }} python -c "import mne; mne.sys_info()"
+        run: docker run ghcr.io/mne-tools/mne-python-jupyter:${{ github.event.inputs.tags }} python -c "import mne; mne.sys_info()"
 
       - name: Build plot image
         run: docker-compose build plot
 
       - name: Rename plot image tag for release
-        run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${{ matrix.MNE_VERSION }}
+        run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${{ github.event.inputs.tags }}
 
       - name: Push plot image to github
-        run: docker push ghcr.io/mne-tools/mne-python-plot:${{ matrix.MNE_VERSION }}
+        run: docker push ghcr.io/mne-tools/mne-python-plot:${{ github.event.inputs.tags }}
 
       - name: System info - plot image
-        run: docker run ghcr.io/mne-tools/mne-python-plot:${{ matrix.MNE_VERSION }} python -c "import mne; mne.sys_info()"
+        run: docker run ghcr.io/mne-tools/mne-python-plot:${{ github.event.inputs.tags }} python -c "import mne; mne.sys_info()"

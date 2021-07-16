@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        MNE_VERSION: [v0.23.0]
+        MNE_VERSION: [v0.23.0, main]
 
     steps:
     

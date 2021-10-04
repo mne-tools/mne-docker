@@ -5,7 +5,7 @@ renderer = mne.viz.backends.renderer.create_3d_figure(bgcolor='w', size=size, sc
 mne.viz.set_3d_backend('pyvista')
 print("Creating image")
 renderer.sphere((0, 0, 0), 'k', 1, resolution=1000)
-renderer.plotter.camera.enable_parallel_projection(True)
+renderer.plotter.camera.enable_parallel_projection()
 renderer.figure.plotter.camera.SetParallelScale(1)
 renderer.show()
 data = (renderer.screenshot() / 255.).mean(-1)  # colors

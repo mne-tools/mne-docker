@@ -58,6 +58,7 @@ RUN conda install --yes \
 RUN pip install s3fs
 RUN pip install bokeh
 RUN pip install nibabel joblib h5py
+RUN pip install pooch
 RUN pip install https://github.com/mne-tools/mne-python/archive/${mne_v}.zip
 
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

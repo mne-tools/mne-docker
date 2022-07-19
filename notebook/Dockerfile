@@ -45,7 +45,7 @@ RUN conda install --yes \
     dask-labextension==3.0.0 \
     python-graphviz \
     && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension@3.0.0 \
-    && conda clean -tipsy \
+    && conda clean -tipy \
     && jupyter lab clean \
     && jlpm cache clean \
     && npm cache clean --force \

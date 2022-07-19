@@ -48,7 +48,7 @@ RUN conda install --yes \
     numpy==1.21.0 \
     pandas==1.3.0 \
     tini==0.18.0 \
-    && conda clean -tipsy \
+    && conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \
     && find /opt/conda/ -type f,l -name '*.js.map' -delete \

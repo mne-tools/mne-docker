@@ -21,7 +21,7 @@ RUN apt-get install -yq --no-install-recommends \
     xvfb \
     x11-utils \
     libx11-dev \
-    qt5-default \
+    qt6-default \
     && apt-get clean
 
 ENV DISPLAY=:99
@@ -57,19 +57,14 @@ RUN conda install --yes \
 
 
 # Install Python packages
-RUN pip install vtk && \
-    pip install boto && \
-    pip install h5py && \
-    pip install nose && \
-    pip install ipyevents && \
-    pip install ipywidgets && \
-    pip install mayavi && \
-    pip install nibabel && \
-    pip install numpy && \
-    pip install pillow && \
-    pip install pyqt5 && \
-    pip install scikit-learn && \
-    pip install scipy && \
+RUN conda install \
+    vtk \
+    boto \
+    h5py \
+    pytest \
+    ipyevents \
+    ipywidgets \
+    pyqt6 && \
     pip install xvfbwrapper && \
     pip install https://github.com/nipy/PySurfer/archive/master.zip && \
     pip install https://codeload.github.com/mne-tools/mne-python/zip/master

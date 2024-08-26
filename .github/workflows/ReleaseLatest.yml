@@ -10,7 +10,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-    
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build base image
-        run: docker-compose build base
+        run: docker compose build base
 
       - name: List docker images
         run: docker images
@@ -35,7 +35,7 @@ jobs:
         run: docker push ghcr.io/mne-tools/mne-python:latest
 
       - name: Build jupyter image
-        run: docker-compose build jupyter
+        run: docker compose build jupyter
 
       - name: Rename jupyter image tag for release
         run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter
@@ -44,7 +44,7 @@ jobs:
         run: docker push ghcr.io/mne-tools/mne-python-jupyter:latest
 
       - name: Build plot image
-        run: docker-compose build plot
+        run: docker compose build plot
 
       - name: Rename plot image tag for release
         run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -31,7 +31,7 @@ jobs:
           echo ${{ github.event.inputs.tags }}
 
       - name: Build base image
-        run: docker-compose build --build-arg mne_v=${{ github.event.inputs.tags }} base
+        run: docker compose build --build-arg mne_v=${{ github.event.inputs.tags }} base
 
       - name: List docker images
         run: docker images
@@ -46,7 +46,7 @@ jobs:
         run: docker run ghcr.io/mne-tools/mne-python:${{ github.event.inputs.tags }} python -c "import mne; mne.sys_info()"
 
       - name: Build jupyter image
-        run: docker-compose build jupyter
+        run: docker compose build jupyter
 
       - name: Rename jupyter image tag for release
         run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${{ github.event.inputs.tags }}
@@ -58,7 +58,7 @@ jobs:
         run: docker run ghcr.io/mne-tools/mne-python-jupyter:${{ github.event.inputs.tags }} python -c "import mne; mne.sys_info()"
 
       - name: Build plot image
-        run: docker-compose build plot
+        run: docker compose build plot
 
       - name: Rename plot image tag for release
         run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${{ github.event.inputs.tags }}

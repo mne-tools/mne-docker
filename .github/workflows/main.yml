@@ -1,7 +1,8 @@
 name: Tests
-
-# Controls when the action will run.
-on:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}-${{ github.event.ref }}
+  cancel-in-progress: true
+on:  # yamllint disable-line rule:truthy
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
@@ -13,49 +14,20 @@ on:
 
 jobs:
   docker:
+    strategy:
+      matrix:
+        image: [base, jupyter, plot]
     runs-on: ubuntu-latest
     steps:
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Base
-
-      - name: Build base image
-        run: docker-compose build base
-    
-      - name: System info - base image
+      - name: Build ${{ matrix.image }} image
+        run: docker compose build ${{ matrix.image }}
+      - name: System info -
         run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"
-
-      - name: Run base test
+      - name: Run test
         run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python python /opt/app/examples/tests/base.py
-
-      # Jupyter
-
-      - name: Build jupyter image
-        run: docker-compose build jupyter
-
-      - name: System info - jupyter image
-        run: docker run mnetools/mne-python-jupyter ipython -c "import mne; mne.sys_info()"
-
-      - name: Run jupyter test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter ipython /opt/app/examples/tests/base.py
-
-      # Plot
-
-      - name: Build plot image
-        run: docker-compose build plot
-
-      - name: System info - plot image
-        run: docker run mnetools/mne-python-plot python -c "import mne; mne.sys_info()"
-
-      - name: Run plotting test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/plot.py

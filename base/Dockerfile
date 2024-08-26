@@ -11,7 +11,7 @@ ENV HOME_DIR=${HOME_DIR}
 
 # setup entry point
 COPY prepare.sh /usr/bin/prepare.sh
-RUN chmod a+x /usr/bin/prepare.sh
+RUN sudo chmod a+x /usr/bin/prepare.sh
 
 RUN chmod 777 /opt
 
@@ -49,12 +49,7 @@ RUN conda install --yes \
     nilearn \
     dipy \
     h5io \
-    && conda clean -tipy \
-    && find /opt/conda/ -type f,l -name '*.a' -delete \
-    && find /opt/conda/ -type f,l -name '*.pyc' -delete \
-    && find /opt/conda/ -type f,l -name '*.js.map' -delete \
-    && find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete \
-    && rm -rf /opt/conda/pkgs
+    && conda clean -tipy
 
 RUN pip install https://github.com/mne-tools/mne-python/archive/${mne_v}.zip
 

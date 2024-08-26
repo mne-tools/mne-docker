@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # TODO: Instead of qt6-default we should just install what's needed for Qt6
 USER root
 RUN apt-get update && \
-    apt-get install -y xvfb qt6-default && \
+    apt-get install -y xvfb qt6-base-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

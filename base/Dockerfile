@@ -56,6 +56,10 @@ RUN conda install --yes \
     s3fs \
     matplotlib-base \
     scikit-learn \
+    numba \
+    nilearn \
+    dipy \
+    h5io \
     && conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \

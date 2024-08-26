@@ -9,12 +9,6 @@ ARG HOME_DIR="/home/${MNE_USER}"
 ENV MNE_USER=${MNE_USER}
 ENV HOME_DIR=${HOME_DIR}
 
-# install xvfb
-RUN apt-get update && \
-    apt-get install -y wget curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # setup entry point
 COPY prepare.sh /usr/bin/prepare.sh
 RUN chmod a+x /usr/bin/prepare.sh
@@ -27,6 +21,11 @@ USER $MNE_USER
 WORKDIR $HOME_DIR
 
 # setup conda
+RUN micromamba config append channels conda-forge && \
+    micromamba config set channel_priority strict && \
+    micromamba shell init -s bash && \
+    echo "micromamba activate" >> ~/.bashrc
+SHELL ["/bin/bash", "--login", "-c"]
 RUN conda install --yes \
     -c conda-forge \
     python==3.12 \

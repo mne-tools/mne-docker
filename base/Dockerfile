@@ -31,7 +31,9 @@ WORKDIR $HOME_DIR
 # setup conda
 ENV PATH="${CONDA_DIR}/bin:${PATH}"
 ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+RUN curl -O micro.mamba.pm/install.sh && \
+    bash install.sh && \
+    rm install.sh
 RUN micromamba config append channels conda-forge && \
     micromamba config set channel_priority strict && \
     micromamba shell init -s bash && \

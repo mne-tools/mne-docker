@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM mambaorg/micromamba:1-noble
 
 ARG mne_v=v1.8.0
 
@@ -8,8 +8,6 @@ ARG MNE_USER="mne_user"
 ARG HOME_DIR="/home/${MNE_USER}"
 ENV MNE_USER=${MNE_USER}
 ENV HOME_DIR=${HOME_DIR}
-
-ARG CONDA_DIR="/opt/conda/"
 
 # install xvfb
 RUN apt-get update && \
@@ -29,16 +27,6 @@ USER $MNE_USER
 WORKDIR $HOME_DIR
 
 # setup conda
-ENV PATH="${CONDA_DIR}/bin:${PATH}"
-ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN curl -O micro.mamba.pm/install.sh && \
-    bash install.sh && \
-    rm install.sh
-RUN micromamba config append channels conda-forge && \
-    micromamba config set channel_priority strict && \
-    micromamba shell init -s bash && \
-    echo "micromamba activate" >> ~/.bashrc
-SHELL ["/bin/bash", "--login", "-c"]
 RUN conda install --yes \
     -c conda-forge \
     python==3.12 \

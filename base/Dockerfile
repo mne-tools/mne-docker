@@ -31,12 +31,12 @@ WORKDIR $HOME_DIR
 # setup conda
 ENV PATH="${CONDA_DIR}/bin:${PATH}"
 ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN "${SHELL}" <(curl -L micro.mamba.pm/install.sh) && \
-    micromamba config append channels conda-forge && \
+RUN bash <(curl -L micro.mamba.pm/install.sh)
+RUN micromamba config append channels conda-forge && \
     micromamba config set channel_priority strict && \
-    micromamba shell init -s bash
+    micromamba shell init -s bash && \
+    echo "micromamba activate" >> ~/.bashrc
 SHELL ["/bin/bash", "--login", "-c"]
-RUN conda config --set channel_priority strict
 RUN conda install --yes \
     -c conda-forge \
     python==3.12 \

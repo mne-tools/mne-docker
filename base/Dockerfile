@@ -13,7 +13,7 @@ ARG CONDA_DIR="/opt/conda/"
 
 # install xvfb
 RUN apt-get update && \
-    apt-get install -y wget && \
+    apt-get install -y wget curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -31,10 +31,8 @@ WORKDIR $HOME_DIR
 # setup conda
 ENV PATH="${CONDA_DIR}/bin:${PATH}"
 ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN curl -O micro.mamba.pm/install.sh && \
-    bash install.sh && \
-    rm install.sh && \
-    micromamba config append channels conda-forge && \
+RUN "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+RUN micromamba config append channels conda-forge && \
     micromamba config set channel_priority strict && \
     micromamba shell init -s bash && \
     echo "micromamba activate" >> ~/.bashrc

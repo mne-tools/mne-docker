@@ -3,17 +3,16 @@ FROM mnetools/mne-python-jupyter
 ENV DEBIAN_FRONTEND=noninteractive
 
 # install xvfb
-# TODO: Instead of qt6-default we should just install what's needed for Qt6
 USER root
 RUN apt-get update && \
-    apt-get install -y xvfb qt6-base-dev && \
+    apt-get install -y xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 USER $MNE_USER
 WORKDIR $HOME_DIR
 
-RUN pip install vtk pyvista pyvistaqt trame PyQt6
+RUN conda install vtk pyvista pyvistaqt trame PySide6 qtpy
 
 # setup environment for mne
 # MNE_3D_OPTION_ANTIALIAS is needed to avoid blank screenshots.

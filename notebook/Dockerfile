@@ -21,7 +21,6 @@ RUN apt-get install -yq --no-install-recommends \
     xvfb \
     x11-utils \
     libx11-dev \
-    qt6-base-dev \
     && apt-get clean
 
 ENV DISPLAY=:99
@@ -50,7 +49,7 @@ RUN conda install --yes \
     pytest \
     ipyevents \
     ipywidgets \
-    pyqt6 \
+    pyside6 \
     xvfbwrapper \
     && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension@3.0.0 \
     && conda clean -tipy \

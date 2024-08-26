@@ -31,12 +31,12 @@ WORKDIR $HOME_DIR
 # setup conda
 ENV PATH="${CONDA_DIR}/bin:${PATH}"
 ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    sh ./Miniconda3-latest-Linux-x86_64.sh -b -p ${CONDA_DIR} && \
-    rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
-    conda init
+RUN "${SHELL}" <(curl -L micro.mamba.pm/install.sh) && \
+    micromamba config append channels conda-forge && \
+    micromamba config set channel_priority strict && \
+    micromamba shell init -s bash
 SHELL ["/bin/bash", "--login", "-c"]
-
+RUN conda config --set channel_priority strict
 RUN conda install --yes \
     -c conda-forge \
     python==3.12 \

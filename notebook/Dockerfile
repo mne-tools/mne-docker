@@ -36,14 +36,22 @@ RUN conda install --yes \
     -c conda-forge \
     python-blosc \
     cytoolz \
-    dask==2020.12.0 \
+    dask \
     lz4 \
     nomkl \
-    numpy==1.18.1 \
-    pandas==1.0.1 \
+    numpy \
+    pandas \
     ipywidgets \
-    dask-labextension==3.0.0 \
+    dask-labextension \
     python-graphviz \
+    vtk \
+    boto \
+    h5py \
+    pytest \
+    ipyevents \
+    ipywidgets \
+    pyqt6 \
+    xvfbwrapper \
     && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension@3.0.0 \
     && conda clean -tipy \
     && jupyter lab clean \
@@ -56,18 +64,8 @@ RUN conda install --yes \
     && rm -rf /opt/conda/pkgs
 
 
-# Install Python packages
-RUN conda install \
-    vtk \
-    boto \
-    h5py \
-    pytest \
-    ipyevents \
-    ipywidgets \
-    pyqt6 && \
-    pip install xvfbwrapper && \
-    pip install https://github.com/nipy/PySurfer/archive/master.zip && \
-    pip install https://codeload.github.com/mne-tools/mne-python/zip/master
+# Install MNE
+RUN pip install https://codeload.github.com/mne-tools/mne-python/zip/master
 
 # Install Jupyter notebook extensions
 RUN pip install RISE && \

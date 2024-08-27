@@ -1,14 +1,12 @@
 name: Tests
-
-# Controls when the action will run.
-on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}-${{ github.event.ref }}
+  cancel-in-progress: true
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -23,17 +21,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: docker compose build base
+      - run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python
       - name: System info - base image
         run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"
       - name: Run base test
         run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python python /opt/app/examples/tests/base.py
       - run: docker compose build jupyter
+      - run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter
       - name: System info - jupyter image
         run: docker run mnetools/mne-python-jupyter ipython -c "import mne; mne.sys_info()"
       - name: Run jupyter test
         run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter ipython /opt/app/examples/tests/base.py
       - run: docker compose build plot
+      - run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot
       - name: System info - plot image
         run: docker run mnetools/mne-python-plot python -c "import mne; mne.sys_info()"
       - name: Run plotting test
         run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/plot.py
+      - name: Push images to github
+        run: |
+          docker push ghcr.io/mne-tools/mne-python:latest
+          docker push ghcr.io/mne-tools/mne-python-jupyter:latest
+          docker push ghcr.io/mne-tools/mne-python-plot:latest
+        if: github.event_name == 'push' && github.repository == 'mne-tools/mne-docker'

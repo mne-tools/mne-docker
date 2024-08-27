@@ -1,6 +1,6 @@
 FROM mnetools/mne-python
 
-RUN pip install jupyterlab ipywidgets ipyvtklink
+RUN conda install --yes jupyterlab ipywidgets ipympl
 
 EXPOSE 8888
 

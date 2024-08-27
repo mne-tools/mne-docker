@@ -1,6 +1,7 @@
-FROM ubuntu:20.04
+# TODO: Use micromamba instead of bare image at some point
+FROM ubuntu:24.04
 
-ARG mne_v=v0.23.0
+ARG mne_v=v1.8.0
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -36,18 +37,34 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &
     rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
     conda init
 SHELL ["/bin/bash", "--login", "-c"]
-
+RUN conda config --add channels conda-forge && \
+    conda config --remove channels defaults && \
+    conda config --set channel_priority strict && \
+    conda config --get channels
 RUN conda install --yes \
-    -c conda-forge \
-    python==3.9 \
+    python==3.12 \
     python-blosc \
     cytoolz \
-    dask==2021.4.0 \
+    dask \
     lz4 \
     nomkl \
-    numpy==1.21.0 \
-    pandas==1.3.0 \
-    tini==0.18.0 \
+    numpy \
+    pandas \
+    tini \
+    pooch \
+    bokeh \
+    joblib \
+    nibabel \
+    h5py \
+    s3fs \
+    matplotlib-base \
+    scikit-learn \
+    numba \
+    nilearn \
+    dipy \
+    h5io \
+    mamba \
+    conda-libmamba-solver \
     && conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \
@@ -55,10 +72,6 @@ RUN conda install --yes \
     && find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete \
     && rm -rf /opt/conda/pkgs
 
-RUN pip install s3fs
-RUN pip install bokeh
-RUN pip install nibabel joblib h5py
-RUN pip install pooch
 RUN pip install https://github.com/mne-tools/mne-python/archive/${mne_v}.zip
 
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

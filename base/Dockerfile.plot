@@ -5,21 +5,21 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install xvfb
 USER root
 RUN apt-get update && \
-    apt-get install -y xvfb qt5-default && \
+    apt-get install -y xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 USER $MNE_USER
 WORKDIR $HOME_DIR
 
-RUN pip install vtk pyvista pyvistaqt PyQt5 matplotlib
+RUN conda install --yes vtk pyvista pyvistaqt trame PySide6 qtpy mne-qt-browser trame-vtk trame-vuetify
 
 # setup environment for mne
 # MNE_3D_OPTION_ANTIALIAS is needed to avoid blank screenshots.
 # PYVISTA_OFF_SCREEN=true is *NOT* needed
 ENV \
-    MNE_3D_BACKEND=pyvista \
-    MNE_3D_OPTION_ANTIALIAS=false\
+    MNE_3D_BACKEND=pyvistaqt \
+    MNE_3D_OPTION_ANTIALIAS=false \
     START_XVFB=true
 
 ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

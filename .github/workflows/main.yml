@@ -39,21 +39,21 @@ jobs:
       - run: docker compose build base --build-arg mne_v="$MNE_VERSION"
       - run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${DOCKER_TAG}
       - name: System info - base image
-        run: docker run mnetools/mne-python:${DOCKER_TAG} python -c "import mne; mne.sys_info()"
+        run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"
       - name: Run base test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python:${DOCKER_TAG} python /opt/app/examples/tests/base.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python python /opt/app/examples/tests/base.py
       - run: docker compose build jupyter
       - run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${DOCKER_TAG}
       - name: System info - jupyter image
-        run: docker run mnetools/mne-python-jupyter:${DOCKER_TAG} ipython -c "import mne; mne.sys_info()"
+        run: docker run mnetools/mne-python-jupyter ipython -c "import mne; mne.sys_info()"
       - name: Run jupyter test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter:${DOCKER_TAG} ipython /opt/app/examples/tests/base.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter ipython /opt/app/examples/tests/base.py
       - run: docker compose build plot
       - run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${DOCKER_TAG}
       - name: System info - plot image
-        run: docker run mnetools/mne-python-plot:${DOCKER_TAG} python -c "import mne; mne.sys_info()"
+        run: docker run mnetools/mne-python-plot python -c "import mne; mne.sys_info()"
       - name: Run plotting test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot:${DOCKER_TAG} python /opt/app/examples/tests/plot.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/plot.py
       - name: Push images to github
         run: |
           set -exo pipefail

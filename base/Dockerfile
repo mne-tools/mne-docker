@@ -65,6 +65,7 @@ RUN conda install --yes \
     h5io \
     mamba \
     conda-libmamba-solver \
+    mne-bids-pipeline \
     && conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \

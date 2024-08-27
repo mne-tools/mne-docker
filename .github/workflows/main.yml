@@ -56,6 +56,7 @@ jobs:
         run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot${DOCKER_TAG} python /opt/app/examples/tests/plot.py
       - name: Push images to github
         run: |
+          set -exo pipefail
           docker push ghcr.io/mne-tools/mne-python${DOCKER_TAG}
           docker push ghcr.io/mne-tools/mne-python-jupyter${DOCKER_TAG}
           docker push ghcr.io/mne-tools/mne-python-plot${DOCKER_TAG}

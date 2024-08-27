@@ -31,7 +31,8 @@ jobs:
             echo "MNE_VERSION=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
             echo "DOCKER_TAG=:${{ github.event.inputs.tags }}" >> $GITHUB_ENV
           else
-            echo "MNE_VERSION=1.8" >> $GITHUB_ENV
+            echo "MNE_VERSION=main" >> $GITHUB_ENV
+            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
           fi
           echo "Got MNE_VERSION=${MNE_VERSION}"
           echo "Got DOCKER_TAG=${DOCKER_TAG}"

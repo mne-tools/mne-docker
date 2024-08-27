@@ -32,14 +32,16 @@ WORKDIR $HOME_DIR
 # setup conda
 ENV PATH="${CONDA_DIR}/bin:${PATH}"
 ARG PATH="${CONDA_DIR}/bin:${PATH}"
+RUN echo "channel_priority: strict" > ~/.condarc &&\
+    echo "channels:" >> ~/.condarc && \
+    echo "  - conda-forge" >> ~/.condarc
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     sh ./Miniconda3-latest-Linux-x86_64.sh -b -p ${CONDA_DIR} && \
     rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
-    conda init
-SHELL ["/bin/bash", "--login", "-c"]
-RUN conda config --remove channels default && \
+    conda init && \
     conda config --set channel_priority strict && \
     conda config --get channels
+SHELL ["/bin/bash", "--login", "-c"]
 RUN conda install --yes \
     python==3.12 \
     python-blosc \
@@ -62,6 +64,8 @@ RUN conda install --yes \
     nilearn \
     dipy \
     h5io \
+    mamba \
+    conda-libmamba-solver \
     && conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \

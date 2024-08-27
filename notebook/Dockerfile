@@ -31,8 +31,7 @@ USER $NB_USER
 RUN pip install --upgrade pip
 RUN npm i npm@latest -g
 
-RUN conda install --yes \
-    -c conda-forge \
+RUN conda install --yes -c conda-forge \
     python-blosc \
     cytoolz \
     dask \

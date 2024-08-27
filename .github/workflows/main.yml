@@ -58,4 +58,4 @@ jobs:
           docker push ghcr.io/mne-tools/mne-python${DOCKER_TAG}
           docker push ghcr.io/mne-tools/mne-python-jupyter${DOCKER_TAG}
           docker push ghcr.io/mne-tools/mne-python-plot${DOCKER_TAG}
-        if: github.event_name == 'push' && github.repository == 'mne-tools/mne-docker'
+        if: github.repository == 'mne-tools/mne-docker' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')

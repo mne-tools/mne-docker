@@ -12,7 +12,7 @@ RUN apt-get update && \
 USER $MNE_USER
 WORKDIR $HOME_DIR
 
-RUN conda install --yes vtk pyvista pyvistaqt trame PySide6 qtpy
+RUN conda install --yes vtk pyvista pyvistaqt trame PySide6 qtpy mne-qt-browser trame-vtk trame-vuetify
 
 # setup environment for mne
 # MNE_3D_OPTION_ANTIALIAS is needed to avoid blank screenshots.

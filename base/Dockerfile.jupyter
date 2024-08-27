@@ -1,6 +1,6 @@
 FROM mnetools/mne-python
 
-RUN conda install -c conda-forge jupyterlab ipywidgets ipyvtklink
+RUN conda install --yes jupyterlab ipywidgets ipyvtklink
 
 EXPOSE 8888
 

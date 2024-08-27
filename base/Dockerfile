@@ -37,8 +37,10 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &
     rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
     conda init
 SHELL ["/bin/bash", "--login", "-c"]
-RUN conda config --set channel_priority strict
-RUN conda install --yes -c conda-forge \
+RUN conda config --remove channels default && \
+    conda config --set channel_priority strict && \
+    conda config --get channels
+RUN conda install --yes \
     python==3.12 \
     python-blosc \
     cytoolz \

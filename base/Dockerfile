@@ -14,7 +14,8 @@ ARG CONDA_DIR="/opt/conda/"
 
 # install xvfb
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends wget git && \
+    apt-get install -y wget && \
+    apt-get install -y --no-install-recommends git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

@@ -39,7 +39,6 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh &
     sh ./Miniconda3-latest-Linux-x86_64.sh -b -p ${CONDA_DIR} && \
     rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
     conda init && \
-    conda config --set channel_priority strict && \
     conda config --get channels
 SHELL ["/bin/bash", "--login", "-c"]
 RUN conda install --yes \

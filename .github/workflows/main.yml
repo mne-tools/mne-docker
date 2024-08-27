@@ -29,7 +29,7 @@ jobs:
           set -eo pipefail
           if [[ "${{ github.event.inputs.tags }}" != "" ]]; then
             echo "MNE_VERSION=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
-            echo "DOCKER_TAG=:${{ github.event.inputs.tags }}" >> $GITHUB_ENV
+            echo "DOCKER_TAG=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
           else
             echo "MNE_VERSION=main" >> $GITHUB_ENV
             echo "DOCKER_TAG=latest" >> $GITHUB_ENV
@@ -37,27 +37,27 @@ jobs:
           echo "Got MNE_VERSION=${MNE_VERSION}"
           echo "Got DOCKER_TAG=${DOCKER_TAG}"
       - run: docker compose build base --build-arg mne_v="$MNE_VERSION"
-      - run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python${DOCKER_TAG}
+      - run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${DOCKER_TAG}
       - name: System info - base image
-        run: docker run mnetools/mne-python${DOCKER_TAG} python -c "import mne; mne.sys_info()"
+        run: docker run mnetools/mne-python:${DOCKER_TAG} python -c "import mne; mne.sys_info()"
       - name: Run base test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python${DOCKER_TAG} python /opt/app/examples/tests/base.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python:${DOCKER_TAG} python /opt/app/examples/tests/base.py
       - run: docker compose build jupyter
-      - run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter${DOCKER_TAG}
+      - run: docker tag mnetools/mne-python-jupyter ghcr.io/mne-tools/mne-python-jupyter:${DOCKER_TAG}
       - name: System info - jupyter image
-        run: docker run mnetools/mne-python-jupyter${DOCKER_TAG} ipython -c "import mne; mne.sys_info()"
+        run: docker run mnetools/mne-python-jupyter:${DOCKER_TAG} ipython -c "import mne; mne.sys_info()"
       - name: Run jupyter test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter${DOCKER_TAG} ipython /opt/app/examples/tests/base.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-jupyter:${DOCKER_TAG} ipython /opt/app/examples/tests/base.py
       - run: docker compose build plot
-      - run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot${DOCKER_TAG}
+      - run: docker tag mnetools/mne-python-plot ghcr.io/mne-tools/mne-python-plot:${DOCKER_TAG}
       - name: System info - plot image
-        run: docker run mnetools/mne-python-plot${DOCKER_TAG} python -c "import mne; mne.sys_info()"
+        run: docker run mnetools/mne-python-plot:${DOCKER_TAG} python -c "import mne; mne.sys_info()"
       - name: Run plotting test
-        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot${DOCKER_TAG} python /opt/app/examples/tests/plot.py
+        run: docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot:${DOCKER_TAG} python /opt/app/examples/tests/plot.py
       - name: Push images to github
         run: |
           set -exo pipefail
-          docker push ghcr.io/mne-tools/mne-python${DOCKER_TAG}
-          docker push ghcr.io/mne-tools/mne-python-jupyter${DOCKER_TAG}
-          docker push ghcr.io/mne-tools/mne-python-plot${DOCKER_TAG}
+          docker push ghcr.io/mne-tools/mne-python:${DOCKER_TAG}
+          docker push ghcr.io/mne-tools/mne-python-jupyter:${DOCKER_TAG}
+          docker push ghcr.io/mne-tools/mne-python-plot:${DOCKER_TAG}
         if: github.repository == 'mne-tools/mne-docker' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')

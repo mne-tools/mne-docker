@@ -31,9 +31,10 @@ RUN useradd -ms /bin/bash -d ${HOME_DIR} ${MNE_USER}
 USER $MNE_USER
 WORKDIR $HOME_DIR
 
-# setup conda
+# setup conda via micromamba
+# https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#automatic-install
 ENV SHELL="/bin/bash"
-RUN $SHELL < (curl -L https://micro.mamba.pm/install.sh)
+RUN "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
 RUN echo "micromamba activate" | tee -a ~/.bashrc
 SHELL ["/bin/bash", "--login", "-c"]
 RUN which micromamba && \

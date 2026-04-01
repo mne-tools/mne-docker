@@ -34,7 +34,9 @@ WORKDIR $HOME_DIR
 # setup conda via micromamba
 # https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#automatic-install
 ENV SHELL="/bin/bash"
-RUN "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+RUN wget https://micro.mamba.pm/install.sh && \
+    sh ./install.sh && \
+    rm -f ./install.sh
 RUN echo "micromamba activate" | tee -a ~/.bashrc
 SHELL ["/bin/bash", "--login", "-c"]
 RUN which micromamba && \

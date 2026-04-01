@@ -38,6 +38,8 @@ RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
     rm -f ./install.sh
 RUN echo "micromamba activate" | tee -a ~/.bashrc
+RUN cat ~/.bashrc
+RUN echo $PATH
 SHELL ["/bin/bash", "--login", "-c"]
 RUN which micromamba && \
     micromamba config append channels conda-forge && \

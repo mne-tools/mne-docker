@@ -63,7 +63,6 @@ RUN conda clean -tipy
 RUN find /opt/conda/ -type f,l -name '*.a' -delete
 RUN find /opt/conda/ -type f,l -name '*.pyc' -delete
 RUN find /opt/conda/ -type f,l -name '*.js.map' -delete
-RUN find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete
 RUN rm -rf /opt/conda/pkgs
 
 RUN conda list

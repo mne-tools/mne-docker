@@ -33,8 +33,8 @@ WORKDIR $HOME_DIR
 
 # setup conda via micromamba
 # https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#automatic-install
-# ENV PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
-# ARG PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
+ENV PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
+ARG PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
 ENV SHELL="/bin/bash"
 RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \

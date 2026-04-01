@@ -16,6 +16,7 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   docker:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +38,7 @@ jobs:
           echo "Got MNE_VERSION=${MNE_VERSION}"
           echo "Got DOCKER_TAG=${DOCKER_TAG}"
       - run: docker compose build base --build-arg mne_v="$MNE_VERSION"
+        timeout-minutes: 10
       - run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${DOCKER_TAG}
       - name: System info - base image
         run: docker run mnetools/mne-python python -c "import mne; mne.sys_info()"

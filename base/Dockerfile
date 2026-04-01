@@ -41,7 +41,7 @@ RUN echo "micromamba activate" | tee -a ~/.bashrc
 RUN which micromamba && \
     micromamba config append channels conda-forge && \
     micromamba config set channel_priority strict
-RUN micromamba install --yes \
+RUN micromamba install -y \
     python=3.13 \
     python-blosc \
     cytoolz \
@@ -68,13 +68,15 @@ RUN micromamba install --yes \
     conda-libmamba-solver \
     mne-bids-pipeline \
     statsmodels \
-    fooof \
-    && conda clean -tipy \
+    fooof
+RUN conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \
     && find /opt/conda/ -type f,l -name '*.js.map' -delete \
     && find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete \
     && rm -rf /opt/conda/pkgs
+
+RUN conda list
 
 RUN pip install https://github.com/mne-tools/mne-python/archive/${mne_v}.zip
 

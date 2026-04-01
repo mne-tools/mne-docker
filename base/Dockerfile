@@ -33,42 +33,24 @@ WORKDIR $HOME_DIR
 
 # setup conda
 ENV SHELL="/bin/bash"
-RUN wget https://micro.mamba.pm/install.sh && \
-    sh ./install.sh && \
-    rm -f ./install.sh
-SHELL ["/bin/bash", "--login", "-c"]
+RUN $SHELL < (curl -L https://micro.mamba.pm/install.sh)
 RUN echo "micromamba activate" | tee -a ~/.bashrc
+SHELL ["/bin/bash", "--login", "-c"]
 RUN which micromamba && \
     micromamba config append channels conda-forge && \
-    micromamba config set channel_priority strict
+    micromamba config set channel_priority strict && \
+    micromamba config list --sources
 RUN micromamba install -y \
     python=3.13 \
-    python-blosc \
-    cytoolz \
-    dask \
-    lz4 \
-    nomkl \
-    numpy \
-    pandas \
-    tini \
-    pooch \
-    bokeh \
-    joblib \
-    nibabel \
-    h5py \
-    s3fs \
-    matplotlib-base \
-    scikit-learn \
-    numba \
-    nilearn \
-    dipy \
-    h5io \
     conda \
     mamba \
-    conda-libmamba-solver \
-    mne-bids-pipeline \
-    statsmodels \
-    fooof
+    conda-libmamba-solver
+
+RUN which conda && \
+    conda --version && \
+    which mamba && \
+    mamba --version
+
 RUN conda clean -tipy \
     && find /opt/conda/ -type f,l -name '*.a' -delete \
     && find /opt/conda/ -type f,l -name '*.pyc' -delete \

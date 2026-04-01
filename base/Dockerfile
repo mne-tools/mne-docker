@@ -40,7 +40,7 @@ RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
     rm -f ./install.sh
 SHELL ["/bin/bash", "--login", "-c"]
-RUN micromamba shell init bash -r ${MAMBA_ROOT_PREFIX}
+RUN micromamba shell init -s bash -r ${MAMBA_ROOT_PREFIX}
 RUN echo "micromamba activate" | tee -a ~/.bashrc
 RUN cat ~/.bashrc
 RUN echo "PATH=$PATH"

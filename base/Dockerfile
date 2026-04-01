@@ -39,9 +39,9 @@ ENV SHELL="/bin/bash"
 RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
     rm -f ./install.sh
+SHELL ["/bin/bash", "--login", "-c"]
 RUN micromamba shell init bash -r ${MAMBA_ROOT_PREFIX}
 RUN echo "micromamba activate" | tee -a ~/.bashrc
-SHELL ["/bin/bash", "--login", "-c"]
 RUN cat ~/.bashrc
 RUN echo "PATH=$PATH"
 RUN which micromamba && \

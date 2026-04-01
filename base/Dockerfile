@@ -10,7 +10,8 @@ ARG HOME_DIR="/home/${MNE_USER}"
 ENV MNE_USER=${MNE_USER}
 ENV HOME_DIR=${HOME_DIR}
 
-ARG CONDA_DIR="/opt/conda/"
+ARG MAMBA_ROOT_PREFIX="/opt/conda"
+ENV MAMBA_ROOT_PREFIX=${MAMBA_ROOT_PREFIX}
 
 # install xvfb
 RUN apt-get update && \
@@ -31,20 +32,17 @@ USER $MNE_USER
 WORKDIR $HOME_DIR
 
 # setup conda
-ENV PATH="${CONDA_DIR}/bin:${PATH}"
-ARG PATH="${CONDA_DIR}/bin:${PATH}"
 RUN wget https://micro.mamba.pm/install.sh && \
-    sh ./install.sh -b -p ${CONDA_DIR} && \
+    sh ./install.sh && \
     rm -f ./install.sh && \
     micromamba shell init
 SHELL ["/bin/bash", "--login", "-c"]
 RUN conda config --add channels conda-forge && \
-    conda config --remove channels defaults && \
     conda config --set channel_priority strict && \
     conda config --show-sources && \
     conda config --get channels
 RUN conda install --yes \
-    python==3.12 \
+    python==3.13 \
     python-blosc \
     cytoolz \
     dask \

@@ -40,7 +40,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 RUN echo "micromamba activate" | tee -a ~/.bashrc
 RUN which micromamba && \
     micromamba config append channels conda-forge && \
-    micromamba config set channel_priority strict && \
+    micromamba config set channel_priority strict
 RUN micromamba install --yes \
     python=3.13 \
     python-blosc \

@@ -41,6 +41,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 RUN conda config --add channels conda-forge && \
     conda config --remove channels defaults && \
     conda config --set channel_priority strict && \
+    conda config --show-sources && \
     conda config --get channels
 RUN conda install --yes \
     python==3.12 \

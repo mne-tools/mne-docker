@@ -35,10 +35,11 @@ WORKDIR $HOME_DIR
 ENV SHELL="/bin/bash"
 RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
-    rm -f ./install.sh && \
-    micromamba shell init
+    rm -f ./install.sh
 SHELL ["/bin/bash", "--login", "-c"]
-RUN conda config --add channels conda-forge && \
+RUN which micromamba && \
+    which conda && \
+    conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
     conda config --show-sources && \
     conda config --get channels

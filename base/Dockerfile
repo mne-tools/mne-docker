@@ -32,11 +32,11 @@ USER $MNE_USER
 WORKDIR $HOME_DIR
 
 # setup conda
+SHELL ["/bin/bash", "--login", "-c"]
 RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
     rm -f ./install.sh && \
     micromamba shell init
-SHELL ["/bin/bash", "--login", "-c"]
 RUN conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
     conda config --show-sources && \

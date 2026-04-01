@@ -33,10 +33,10 @@ WORKDIR $HOME_DIR
 # setup conda
 ENV PATH="${CONDA_DIR}/bin:${PATH}"
 ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    sh ./Miniconda3-latest-Linux-x86_64.sh -b -p ${CONDA_DIR} && \
-    rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
-    conda init
+RUN wget https://micro.mamba.pm/install.sh && \
+    sh ./install.sh -b -p ${CONDA_DIR} && \
+    rm -f ./install.sh && \
+    micromamba shell init
 SHELL ["/bin/bash", "--login", "-c"]
 RUN conda config --add channels conda-forge && \
     conda config --remove channels defaults && \

@@ -33,14 +33,17 @@ WORKDIR $HOME_DIR
 
 # setup conda via micromamba
 # https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#automatic-install
+# ENV PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
+# ARG PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
 ENV SHELL="/bin/bash"
 RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
     rm -f ./install.sh
+RUN micromamba shell init bash -r ${MAMBA_ROOT_PREFIX}
 RUN echo "micromamba activate" | tee -a ~/.bashrc
-RUN cat ~/.bashrc
-RUN echo $PATH
 SHELL ["/bin/bash", "--login", "-c"]
+RUN cat ~/.bashrc
+RUN echo "PATH=$PATH"
 RUN which micromamba && \
     micromamba config append channels conda-forge && \
     micromamba config set channel_priority strict && \

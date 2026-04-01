@@ -37,14 +37,12 @@ RUN wget https://micro.mamba.pm/install.sh && \
     sh ./install.sh && \
     rm -f ./install.sh
 SHELL ["/bin/bash", "--login", "-c"]
+RUN echo "micromamba activate" | tee -a ~/.bashrc
 RUN which micromamba && \
-    which conda && \
-    conda config --add channels conda-forge && \
-    conda config --set channel_priority strict && \
-    conda config --show-sources && \
-    conda config --get channels
-RUN conda install --yes \
-    python==3.13 \
+    micromamba config append channels conda-forge && \
+    micromamba config set channel_priority strict && \
+RUN micromamba install --yes \
+    python=3.13 \
     python-blosc \
     cytoolz \
     dask \
@@ -65,6 +63,7 @@ RUN conda install --yes \
     nilearn \
     dipy \
     h5io \
+    conda \
     mamba \
     conda-libmamba-solver \
     mne-bids-pipeline \

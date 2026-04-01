@@ -59,12 +59,12 @@ RUN which conda && \
     which mamba && \
     mamba --version
 
-RUN conda clean -tipy \
-    && find /opt/conda/ -type f,l -name '*.a' -delete \
-    && find /opt/conda/ -type f,l -name '*.pyc' -delete \
-    && find /opt/conda/ -type f,l -name '*.js.map' -delete \
-    && find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete \
-    && rm -rf /opt/conda/pkgs
+RUN conda clean -tipy
+RUN find /opt/conda/ -type f,l -name '*.a' -delete
+RUN find /opt/conda/ -type f,l -name '*.pyc' -delete
+RUN find /opt/conda/ -type f,l -name '*.js.map' -delete
+RUN find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete
+RUN rm -rf /opt/conda/pkgs
 
 RUN conda list
 

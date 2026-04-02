@@ -50,9 +50,32 @@ RUN which micromamba && \
     micromamba config list --sources
 RUN micromamba install -y \
     python=3.13 \
+    python-blosc \
+    cytoolz \
+    dask \
+    lz4 \
+    nomkl \
+    numpy \
+    pandas \
+    tini \
+    pooch \
+    bokeh \
+    joblib \
+    nibabel \
+    h5py \
+    s3fs \
+    matplotlib-base \
+    scikit-learn \
+    numba \
+    nilearn \
+    dipy \
+    h5io \
     conda \
     mamba \
-    conda-libmamba-solver
+    conda-libmamba-solver \
+    mne-bids-pipeline \
+    statsmodels \
+    fooof
 
 RUN which conda && \
     conda --version && \

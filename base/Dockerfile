@@ -10,7 +10,8 @@ ARG HOME_DIR="/home/${MNE_USER}"
 ENV MNE_USER=${MNE_USER}
 ENV HOME_DIR=${HOME_DIR}
 
-ARG CONDA_DIR="/opt/conda/"
+ARG MAMBA_ROOT_PREFIX="/opt/conda"
+ENV MAMBA_ROOT_PREFIX=${MAMBA_ROOT_PREFIX}
 
 # install xvfb
 RUN apt-get update && \
@@ -30,21 +31,25 @@ RUN useradd -ms /bin/bash -d ${HOME_DIR} ${MNE_USER}
 USER $MNE_USER
 WORKDIR $HOME_DIR
 
-# setup conda
-ENV PATH="${CONDA_DIR}/bin:${PATH}"
-ARG PATH="${CONDA_DIR}/bin:${PATH}"
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    sh ./Miniconda3-latest-Linux-x86_64.sh -b -p ${CONDA_DIR} && \
-    rm -f ./Miniconda3-latest-Linux-x86_64.sh && \
-    conda init
+# setup conda via micromamba
+# https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#automatic-install
+ENV PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
+ARG PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
+ENV SHELL="/bin/bash"
+RUN wget https://micro.mamba.pm/install.sh && \
+    sh ./install.sh && \
+    rm -f ./install.sh
 SHELL ["/bin/bash", "--login", "-c"]
-RUN conda config --add channels conda-forge && \
-    conda config --remove channels defaults && \
-    conda config --set channel_priority strict && \
-    conda config --show-sources && \
-    conda config --get channels
-RUN conda install --yes \
-    python==3.12 \
+RUN micromamba shell init -s bash -r ${MAMBA_ROOT_PREFIX}
+RUN echo "micromamba activate" | tee -a ~/.bashrc
+RUN cat ~/.bashrc
+RUN echo "PATH=$PATH"
+RUN which micromamba && \
+    micromamba config append channels conda-forge && \
+    micromamba config set channel_priority strict && \
+    micromamba config list --sources
+RUN micromamba install -y \
+    python=3.13 \
     python-blosc \
     cytoolz \
     dask \
@@ -65,17 +70,25 @@ RUN conda install --yes \
     nilearn \
     dipy \
     h5io \
+    conda \
     mamba \
     conda-libmamba-solver \
     mne-bids-pipeline \
     statsmodels \
-    fooof \
-    && conda clean -tipy \
-    && find /opt/conda/ -type f,l -name '*.a' -delete \
-    && find /opt/conda/ -type f,l -name '*.pyc' -delete \
-    && find /opt/conda/ -type f,l -name '*.js.map' -delete \
-    && find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete \
-    && rm -rf /opt/conda/pkgs
+    fooof
+
+RUN which conda && \
+    conda --version && \
+    which mamba && \
+    mamba --version
+
+RUN conda clean -tipy
+RUN find /opt/conda/ -type f,l -name '*.a' -delete
+RUN find /opt/conda/ -type f,l -name '*.pyc' -delete
+RUN find /opt/conda/ -type f,l -name '*.js.map' -delete
+RUN rm -rf /opt/conda/pkgs
+
+RUN conda list
 
 RUN pip install https://github.com/mne-tools/mne-python/archive/${mne_v}.zip
 

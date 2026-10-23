@@ -8,3 +8,7 @@ updates:
       actions:
         patterns:
           - "*"
+  - package-ecosystem: "docker"
+    directory: "/base"
+    schedule:
+      interval: "monthly"

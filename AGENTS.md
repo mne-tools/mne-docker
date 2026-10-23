@@ -28,43 +28,47 @@ fragments, no docs build, no pytest suite, and no pre-commit configuration.
 
 ## Things to know
 
-- The images form a chain, built in this order (see `docker-compose.yml`):
-  `base/Dockerfile` (`mnetools/mne-python`, micromamba + conda-forge packages + MNE-Python
-  installed from a GitHub archive of the `mne_v` build arg) →
-  `base/Dockerfile.jupyter` (`mnetools/mne-python-jupyter`, adds JupyterLab) →
-  `base/Dockerfile.plot` (`mnetools/mne-python-plot`, adds Xvfb, VTK/PyVista, Qt, and
-  `mne-qt-browser`). The later images start `FROM` the locally built earlier ones, so a
-  change to `base/Dockerfile` affects all three.
-- `base/prepare.sh` is the entrypoint of every image (via `tini`). It installs
-  `EXTRA_APT_PACKAGES`, `/opt/app/environment.yml`, `EXTRA_CONDA_PACKAGES`, and
-  `EXTRA_PIP_PACKAGES` at container start and starts Xvfb when `START_XVFB` is set. These
-  are user-facing; don't rename or drop them.
-- Images run as the unprivileged `mne_user`; switch to `USER root` only for steps that
-  need it (e.g., `apt-get`) and switch back afterward, as `Dockerfile.plot` does.
-- Image size matters: keep the cleanup steps (`conda clean`, deleting `*.a`, `*.pyc`,
-  `*.js.map`, and `pkgs`) after package installs, and prefer conda-forge packages in the
-  existing `micromamba install` / `conda install` lists over extra layers.
-- `notebook/` is legacy: it is not in `docker-compose.yml` or CI and is not maintained.
-  Leave it alone unless asked.
+- The images form a chain (see `docker-compose.yml`): `base/Dockerfile`
+  (`ghcr.io/mne-tools/mne-python`, built `FROM` the `mambaorg/micromamba` Ubuntu image) →
+  `base/Dockerfile.jupyter` (`-jupyter`, adds JupyterLab) → `base/Dockerfile.plot`
+  (`-plot`, adds Xvfb, VTK/PyVista, Qt, and `mne-qt-browser`). The later Dockerfiles use
+  `FROM base` / `FROM jupyter`, which Compose resolves to the locally built earlier image via
+  `additional_contexts`, so build through `docker compose` (plain `docker build` of them
+  fails), and a change to `base/Dockerfile` affects all three.
+- The `mne_v` build arg selects MNE-Python: a release tag (`v1.13.2`) installs `mne-base`
+  from conda-forge; anything else (e.g., `main`) installs `mne-base` for its dependencies and
+  then pip-installs that GitHub ref over it.
+- The environment is managed with micromamba only (no `conda` or `mamba` in the image);
+  conda-forge is configured as the channel in `/opt/conda/.condarc`.
+- `base/prepare.sh` runs at container start (after the micromamba entrypoint activates the
+  environment, under `tini`). It installs `EXTRA_APT_PACKAGES` (via a `sudo` rule limited to
+  `apt-get`), `/opt/app/environment.yml`, `EXTRA_CONDA_PACKAGES`, and `EXTRA_PIP_PACKAGES`,
+  and starts Xvfb when `START_XVFB` is set. These are user-facing; don't rename or drop them.
+- Images run as the unprivileged `mne_user` (UID/GID 1001); switch to `USER root` only for
+  steps that need it (e.g., `apt-get`) and switch back afterward, as `Dockerfile.plot` does.
+- Image size matters: end every `micromamba install` with `cleanup.sh` *in the same `RUN`*
+  (a later `RUN` cannot shrink an earlier layer), and prefer adding conda-forge packages to
+  the existing install lists over extra layers. New packages must exist for both
+  `linux-64` and `linux-aarch64`.
 - Which MNE-Python version gets built, and which image tags get pushed, is decided in
   `.github/workflows/main.yml` (the "Set env vars" step), not by the `mne_v` default in
-  `base/Dockerfile`. Images are pushed only from `mne-tools/mne-docker` on `push` or
-  `workflow_dispatch` events; pull requests build and test without pushing. The release
-  process is described in the README.
+  `base/Dockerfile`. Each architecture is built and tested natively on its own runner and
+  pushed as `<tag>-amd64` / `<tag>-arm64`, then the `manifest` job combines them into the
+  multi-arch tag. Images are pushed only from `mne-tools/mne-docker` and never for pull
+  requests. The release process is described in the README.
 
 ## Testing
 
-There is no unit-test suite. CI builds each image and then, for each one, prints
+There is no unit-test suite. CI builds the images and then, for each one, prints
 `mne.sys_info()` and runs a smoke test: `tests/base.py` (reads a NIRx dataset, run in the
 base and jupyter images) and `tests/plot.py` (renders a 3D sphere off-screen and checks the
 screenshot, run in the plot image). To check a change locally, mirror the workflow:
 
 ```bash
-docker compose build base --build-arg mne_v=main
-docker run -v `pwd`:/opt/app/examples mnetools/mne-python python /opt/app/examples/tests/base.py
-docker compose build jupyter plot
-docker run -v `pwd`:/opt/app/examples mnetools/mne-python-plot python /opt/app/examples/tests/plot.py
+docker compose build --build-arg mne_v=v1.13.2
+docker run -v "$(pwd)":/opt/app/examples ghcr.io/mne-tools/mne-python python /opt/app/examples/tests/base.py
+docker run -v "$(pwd)":/opt/app/examples ghcr.io/mne-tools/mne-python-plot python /opt/app/examples/tests/plot.py
 ```
 
-Full builds are slow (CI allows 15 minutes for `base` alone), so say so if you could not
-run them and are relying on CI instead.
+A local build only covers your machine's architecture, and full builds are slow (several
+minutes), so say so if you could not run them and are relying on CI instead.

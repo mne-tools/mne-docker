@@ -1,18 +1,17 @@
-FROM mnetools/mne-python-jupyter
+# "jupyter" is the mne-python-jupyter image, provided via additional_contexts in docker-compose.yml
+FROM jupyter
 
-ENV DEBIAN_FRONTEND=noninteractive
+LABEL org.opencontainers.image.description="MNE-Python with JupyterLab and 2D/3D plotting"
 
-# install xvfb
 USER root
 RUN apt-get update && \
-    apt-get install -y xvfb && \
+    apt-get install -y --no-install-recommends xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
 USER $MNE_USER
-WORKDIR $HOME_DIR
 
-RUN conda install --yes vtk pyvista pyvistaqt trame PySide6 qtpy mne-qt-browser trame-vtk trame-vuetify
+RUN micromamba install -y -n base vtk pyvista pyvistaqt trame PySide6 qtpy mne-qt-browser trame-vtk trame-vuetify && \
+    cleanup.sh
 
 # setup environment for mne
 # MNE_3D_OPTION_ANTIALIAS is needed to avoid blank screenshots.
@@ -21,5 +20,3 @@ ENV \
     MNE_3D_BACKEND=pyvistaqt \
     MNE_3D_OPTION_ANTIALIAS=false \
     START_XVFB=true
-
-ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

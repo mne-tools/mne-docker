@@ -1,7 +1,9 @@
-FROM mnetools/mne-python
+# "base" is the mne-python image, provided via additional_contexts in docker-compose.yml
+FROM base
 
-RUN conda install --yes jupyterlab ipywidgets ipympl
+LABEL org.opencontainers.image.description="MNE-Python with JupyterLab"
+
+RUN micromamba install -y -n base jupyterlab ipywidgets ipympl && \
+    cleanup.sh
 
 EXPOSE 8888
-
-ENTRYPOINT ["tini", "-g", "--", "/usr/bin/prepare.sh"]

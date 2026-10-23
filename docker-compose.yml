@@ -6,46 +6,44 @@ services:
     build:
       context: ./base
       dockerfile: Dockerfile
-    image: mnetools/mne-python
+    image: ghcr.io/mne-tools/mne-python
 
   jupyter:
-    depends_on:
-        - base
     build:
       context: ./base
       dockerfile: Dockerfile.jupyter
-    image: mnetools/mne-python-jupyter
+      additional_contexts:
+        base: service:base
+    image: ghcr.io/mne-tools/mne-python-jupyter
 
   plot:
-    depends_on:
-        - jupyter
     build:
       context: ./base
       dockerfile: Dockerfile.plot
-    image: mnetools/mne-python-plot
+      additional_contexts:
+        jupyter: service:jupyter
+    image: ghcr.io/mne-tools/mne-python-plot
 
   # Dask
 
   scheduler:
-    depends_on:
-      - base
-    image: mnetools/mne-python
+    image: ghcr.io/mne-tools/mne-python
     hostname: mne-dask-scheduler
     ports:
       - "8786:8786"
       - "8787:8787"
-    command: ["dask-scheduler"]
+    command: ["dask", "scheduler"]
 
   worker:
     depends_on:
-      - base
-    image: mnetools/mne-python
+      - scheduler
+    image: ghcr.io/mne-tools/mne-python
     hostname: mne-dask-worker
-    command: ["dask-worker", "tcp://scheduler:8786"]
+    command: ["dask", "worker", "tcp://scheduler:8786"]
 
   worker-plot:
     depends_on:
-      - plot
-    image: mnetools/mne-python-plot
+      - scheduler
+    image: ghcr.io/mne-tools/mne-python-plot
     hostname: mne-dask-worker-plot
-    command: ["dask-worker", "tcp://scheduler:8786"]
+    command: ["dask", "worker", "tcp://scheduler:8786"]

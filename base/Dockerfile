@@ -1,7 +1,7 @@
 # TODO: Use micromamba instead of bare image at some point
 FROM ubuntu:24.04
 
-ARG mne_v=v1.8.0
+ARG mne_v=v1.13.2
 
 ENV DEBIAN_FRONTEND=noninteractive
 

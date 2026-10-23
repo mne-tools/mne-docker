@@ -25,9 +25,9 @@ This allows you to specify which version of MNE-Python you wish to run.
 Additionally, if you wish to use the latest development version, you can specify the `main` branch.
 For example:
 
-* `mne-tools/mne-python:latest` would use the latest released MNE-Python version, e.g. v0.23.0.
-* `mne-tools/mne-python:0.23.0` would use the MNE-Python version 0.23.0.
-* `mne-tools/mne-python:main` would use the development version of MNE-Python.
+* `ghcr.io/mne-tools/mne-python:latest` would use the latest released MNE-Python version, e.g. v1.13.2.
+* `ghcr.io/mne-tools/mne-python:v1.13.2` would use the MNE-Python version 1.13.2.
+* `ghcr.io/mne-tools/mne-python:main` would use the development version of MNE-Python.
 
 
 ## Building images
@@ -47,21 +47,25 @@ docker-compose build notebook
 
 Images are automatically built and uploaded to the GitHub container repository.
 
-For example, to run the MNE-Python version v0.23.0 image,
+For example, to run the MNE-Python version v1.13.2 image,
 with plotting capabilities,
 mount the local directory,
 and start up a notebook server run:
 
 ```bash
-docker run -p 8888:8888 -v `pwd`:/home/mne_user ghcr.io/mne-tools/mne-python-plot:v0.23.0 jupyter-lab --ip="*"
+docker run -p 8888:8888 -v `pwd`:/home/mne_user ghcr.io/mne-tools/mne-python-plot:v1.13.2 jupyter-lab --ip="*"
 ```
 
-#### Dockerhub
+#### New versions
 
 Building and releasing new image versions is done automatically via GitHub Actions. When new commits are
-pushed to the main branch images are built with the `dev` tag and pushed to Docker Hub.
+pushed to the main branch, images are built with the development version of MNE-Python and pushed with
+the `main` tag.
 
-When a new version of mne-python is released a PR should be raised to bump the versions in
-the `Dockerfile`s and then once that has been merged a new tag matching the mne-python version
-should be pushed. GitHub Actions will then build the images and push them with version tags and update
-`latest` too.
+When a new version of mne-python is released, a PR should be opened to bump the default `mne_v` in
+`base/Dockerfile`. Once that has been merged, a tag matching the mne-python version (e.g., `v1.13.2`)
+should be pushed to this repository. GitHub Actions will then build the images and push them with the
+version tag, and update `latest` too.
+
+Images for a specific MNE-Python version can also be built manually via the "Run workflow" button
+(`workflow_dispatch`) of the Tests workflow, which pushes only the version tag.

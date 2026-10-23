@@ -5,6 +5,7 @@ concurrency:
 on:  # yamllint disable-line rule:truthy
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -28,15 +29,22 @@ jobs:
       - name: Set env vars
         run: |
           set -eo pipefail
-          if [[ "${{ github.event.inputs.tags }}" != "" ]]; then
-            echo "MNE_VERSION=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
-            echo "DOCKER_TAG=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            # Pushing a tag like v1.13.2 builds that release and updates "latest"
+            MNE_VERSION="${{ github.ref_name }}"
+            PUSH_LATEST=true
+          elif [[ "${{ github.event.inputs.tags }}" != "" ]]; then
+            MNE_VERSION="${{ github.event.inputs.tags }}"
+            PUSH_LATEST=false
           else
-            echo "MNE_VERSION=main" >> $GITHUB_ENV
-            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+            MNE_VERSION=main
+            PUSH_LATEST=false
           fi
+          echo "MNE_VERSION=${MNE_VERSION}" >> $GITHUB_ENV
+          echo "DOCKER_TAG=${MNE_VERSION}" >> $GITHUB_ENV
+          echo "PUSH_LATEST=${PUSH_LATEST}" >> $GITHUB_ENV
           echo "Got MNE_VERSION=${MNE_VERSION}"
-          echo "Got DOCKER_TAG=${DOCKER_TAG}"
+          echo "Got PUSH_LATEST=${PUSH_LATEST}"
       - run: docker compose build base --build-arg mne_v="$MNE_VERSION"
         timeout-minutes: 15
       - run: docker tag mnetools/mne-python ghcr.io/mne-tools/mne-python:${DOCKER_TAG}
@@ -62,4 +70,10 @@ jobs:
           docker push ghcr.io/mne-tools/mne-python:${DOCKER_TAG}
           docker push ghcr.io/mne-tools/mne-python-jupyter:${DOCKER_TAG}
           docker push ghcr.io/mne-tools/mne-python-plot:${DOCKER_TAG}
+          if [[ "${PUSH_LATEST}" == "true" ]]; then
+            for name in mne-python mne-python-jupyter mne-python-plot; do
+              docker tag ghcr.io/mne-tools/${name}:${DOCKER_TAG} ghcr.io/mne-tools/${name}:latest
+              docker push ghcr.io/mne-tools/${name}:latest
+            done
+          fi
         if: github.repository == 'mne-tools/mne-docker' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')

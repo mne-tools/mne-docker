@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:2.9.0-ubuntu26.04
+FROM mambaorg/micromamba:2.10.0-ubuntu26.04
 
 # MNE-Python version: a release tag like v1.13.2 is installed from conda-forge,
 # anything else (e.g., main) is pip-installed from that GitHub ref
